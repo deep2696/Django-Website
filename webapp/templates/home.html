@@ -1,0 +1,200 @@
+{% load staticfiles %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+
+.dropbtn  li span {
+  font-size: :40px;
+}
+
+.dropbtn {
+    background-color: #222;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+li {
+  border-right: 2px solid black;
+}
+.w3-content{
+	max-width:980px;
+	margin-right:10%;
+	}
+	
+.mySlides {
+	display:none;
+	}
+	
+h3 {
+	color: #FF5722;
+    font-size: 4em;
+    text-align: center;
+    margin: 0;
+    font-family: 'Great Vibes', cursive;
+    letter-spacing: 2px;
+}
+
+.agileits-welcome-left img{
+	width:100%;
+}
+
+.agileits-welcome-grids,.special-top-grids{
+	margin:4em 0 0 0;
+}
+
+.agileits-welcome-left h2{
+	color: #212121;
+    font-size: 1em;
+    margin:0;
+    line-height: 1.8em;
+    letter-spacing: 2px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.agile-border{
+    background: #FF5722;
+    height: 2px;
+    width: 100px;
+    margin: 1em 0;
+}
+.agileits-welcome-left p{
+	color:#999999;
+	font-size:.9em;
+	margin:0;
+	line-height:1.8em;
+}
+.agileits-welcome-left p span{
+	display:block;
+	margin:1em 0 0 0;
+}
+.leave {
+	font-color:black;
+}
+</style>
+</head>
+<body background="{% static 'webapp/images/background.jpg' %}">
+
+<h1 align=center style='color:red'> <b>Geetanjali Super Store</b> </h1>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a href="/order" class="glyphicon glyphicon-shopping-cart" style="color:green">ORDER NOW!</a></li>
+      {% elif request.user.is_superuser %}
+      <li><a href="/order" class="glyphicon glyphicon-shopping-cart" style="color:green">BUY NOW!</a></li>
+      {% else %}
+      <li><a href="/items"> Items </a> </li>
+      {% endif %}
+      <li><a href="/offers">Offers</a></li>
+      
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if request.user.is_authenticated %}
+        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span>Dashboard</a></li>
+      <li><a href="/logout"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+      {% else %}
+      <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+{% if messages %}
+    <center>
+{% for message in messages %}
+        <div {% if message.tags == 'error' %} class="alert alert-danger" role="alert" {% else %} class="alert alert-success" {% endif %}> <p style="font-size:30px">{{ message }}</p></div>
+        {% endfor %}
+        </center>
+    {% endif %}
+<div class="w3-content w3-section" style="align:right">
+  <img class="mySlides" src="{% static 'webapp/images/1.jpg' %}" style="width:80%;height:100%">
+  <img class="mySlides" src="{% static 'webapp/images/2.jpg' %}" style="width:80%;height:100%">
+
+</div>
+
+<div class='welcome'>
+	<h3>Welcome</h3>
+	<div class="agileits-welcome-grids">
+			<div class="col-md-5 agileits-welcome-left">
+				<img src="{% static 'webapp/images/3.jpg' %}" alt="" />
+			</div>
+			<div class="col-md-7 agileits-welcome-left">
+				<h2>Online grocery shopping in Varanasi</h2>
+				<div class="agile-border"> </div>
+				<p>Buy groceries, fresh fruits & vegetables, cosmetics and baby care products. We get it all delivered to your home and office within hours. 
+				   Save time and money with our best prices, deals and offers.<br>
+				   Order thousands of products at just a tap; milk, eggs, bread, cooking, oil, ghee, atta, rice, fresh fruits & vegetables, spices, chocolates, chips,
+				   biscuits, Maggi, cold drinks, shampoos, soaps, body wash, pet, food, diapers, electronics, other organic and gourmet products from stores near you.
+				   <div class='leave'>
+					<br><b>Mobile</b> : +91-1234567890
+					<br><b>Address</b> : Shop No: 197, Hyderabad Gate, Varanasi 221005
+					<br><b>Email</b> : geeetanjalisuper@gmail.com
+				   </div>
+			</div>
+	</div>
+
+<script>
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";  
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}    
+    x[myIndex-1].style.display = "block";  
+    setTimeout(carousel, 3000); // Change image every 2 seconds
+}
+</script>
+
+
+</body>
+</html>

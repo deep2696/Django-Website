@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <title>Place</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src= "https://www.payumoney.com/Api/REST/op/buttonScript" async="true" > </script>
+<script>
+ 
+  function getRandId() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (var i = 0; i < 6; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return text;
+  };
+    function callme(){
+          window.PUM.setData({{ total }}, getRandId(),"shirt200"); // to pay Rs 1 replace {{ total }} by (document.getElementById('payme').innerHTML) and remove COMMENT
+          window.PUM.pay();
+    };
+
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+.glyphicon.glyphicon-home {
+  font-size: 30px;
+}
+
+.glyphicon.glyphicon-credit-card {
+  font-size: 30px;
+}
+span {
+  font-size: 30px;
+}
+li span {
+  font-size: 20px;
+}
+li {
+  border-right: 2px solid black;
+}
+</style>
+</head>
+<body background="{% static 'webapp/images/background.jpg' %}">
+
+<h1 align=center style='color:red'> <b>Geetanjali Super Store</b> </h1>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a href="/order" class="glyphicon glyphicon-shopping-cart" style="color:green">ORDER NOW!</a></li>
+      {% else %}
+      <li><a href="/items"> Items </a> </li>
+      {% endif %}
+      <li><a href="/offers">Offers</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if request.user.is_authenticated %}
+        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span>Dashboard</a></li>
+      <li><a href="/logout"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+      {% else %}
+      <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+  
+  <div class="alert alert-success" style="height:60%;width:60%;text-align:center;border-radius:2%;margin-left:20%;border:4px solid #00cc44;margin-top:5%";>
+    <p style="font-size:90px"><strong>THANK YOU!</strong></p><br>
+    <p style="font-size:50px;color:black">Your order has been placed.</p><br>
+      <p style="font-size:30px;color:red"> Your Order ID : {{ oid }}</p> 
+      <p style="font-size:30px;color:red"> Your Total Amount : {{ total }}</p>
+      <!-- <div id="payme" style="color:#dff0d8">1</div> -->
+      <p style="font-size:30px;color:blue"> Placed on : <span id="qwe" style="font-size:30px;color:black">{{ date }} </span></p>
+  <br><a href="/" class="btn btn-info btn-lg glyphicon glyphicon-home" style="float:center;margin:2px;border:4px solid;"><span>Home</span></a>
+  <span class='pm-button btn btn-info btn-lg glyphicon glyphicon-credit-card' style="float:center;margin:2px;border:4px solid;background-color:green;" id='867620204E33FD751BDF8348EEF5C3A3' onClick="callme()">
+  <span class="state active">
+    <input type="image" width="131" height="37" value="PayNow!">
+  </span>
+  <span class="state clicked" style="display:none" >
+    <input type="image" width="131" height="37" value="Please Wait...">
+  </span>
+</span>
+  </div>
+
+
+</body>
+</html>

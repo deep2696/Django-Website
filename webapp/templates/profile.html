@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <title>Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<style>
+  .but {
+     background:none!important;
+     color:inherit;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+     border-bottom:1px solid #444; 
+     cursor: pointer;
+}
+  li {
+  border-right: 2px solid black;
+}
+		table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td {
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+   #ta table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#ta th, td {
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
+#ta tr:nth-child(even){background-color: #f2f2f2}
+
+#ta th {
+    background-color: #4CAF50;
+    color: white;
+}		
+    #tab table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#tab th, td {
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
+#tab tr:nth-child(even){background-color: #f2f2f2}
+
+#tab th {
+    background-color: #4CAF50;
+    color: white;
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    }
+.modal-dialog {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.modal-content {
+  height: auto;
+  min-height: 100%;
+  border-radius: 0;
+}
+	</style>
+  </head>
+<body background="{% static 'webapp/images/background.jpg' %}">
+
+<h1 align=center style='color:red'> <b>Geetanjali Super Store</b> </h1>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a href="/order" class="glyphicon glyphicon-shopping-cart" style="color:green">ORDER NOW!</a></li>
+      {% else %}
+      <li><a href="/items"> Items </a> </li>
+      {% endif %}
+      <li><a href="/offers">Offers</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if request.user.is_authenticated %}
+        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span>Dashboard</a></li>
+      <li><a href="/logout"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+      {% else %}
+      <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+{% if messages %}
+    <center>
+{% for message in messages %}
+        <div {% if message.tags == 'error' %} class="alert alert-danger" role="alert" {% else %} class="alert alert-success" {% endif %}> <p style="font-size:30px">{{ message }}</p></div>
+        {% endfor %}
+        </center>
+    {% endif %}
+{% if request.user.is_superuser %}
+  <h2 align="center"> <u>Dashboard</u></h2><br>
+  <table style="table-layout:fixed;width=100%">
+  <tr>
+    <td>  </td>
+    <td> <b> Total Orders </b>: </td>
+    <td> {{ totalorder }} </td>
+    <td>  </td>
+  </tr>
+  <tr>
+    <td>  </td>
+    <td> <b> Total Amount </b>:</td>
+    <td> {{ totalamount }} </td>
+    <td>  </td>
+  </tr>
+</table>
+  <center>
+  <a href="/pending" class="btn btn-info btn-lg glyphicon" style="width:11%;margin-bottom:4px">Pending Orders</a>&nbsp&nbsp&nbsp
+  <a href="/allorder" class="btn btn-info btn-lg glyphicon" style="width:10%;margin-bottom:4px">All Orders</a>&nbsp&nbsp&nbsp
+  <a href="/items" class="btn btn-info btn-lg glyphicon glyphicon-pencil" style="width:10%;margin-bottom:4px">Edit Items</a>
+  </center>
+    {% ifnotequal enter 0 %}
+      <table id="tab" style="table-layout:fixed;width=100%">
+        <tr>
+          <th> S.No. </th>
+          <th> Order ID </th>
+          <th> Customer Name </th>
+          <th> Address </th>
+          <th> Phone </th>
+          <th> Status </th>
+          <th>  </th>
+          <th>  </th>
+        </tr>
+        {% for i in details %}
+        <tr>
+          <td> {{ forloop.counter }}. </td>
+          <td> {{ i.0 }} </td>
+          <td> {{ i.1 }} </td>
+          <td> {{ i.2 }} </td>
+          <td> {{ i.3 }} </td>
+          {% ifequal i.4 "Pending" %}<td> <span style="color:red">{{ i.4 }} </td>
+          {% else %}<td> <span style="color:green">{{ i.4 }} </td>{% endifequal %}
+          <td>
+            {% ifequal i.4 "Pending" %}<form action="/changestatus/" method="GET">
+              <input type="hidden" name="oid" value="{{ i.0 }}">
+              <input type="hidden" name="enter" value="{{ enter }}">
+              <button type="submit" class="btn btn-info btn-lg" style="width:80%;background-color:red">Change Status</button>
+            </form>  {% endifequal %} 
+          </td>
+          <td>
+            <form action="/deleteorder/" method="GET">
+              <input type="hidden" name="oid" value="{{ i.0 }}">
+              <input type="hidden" name="enter" value="{{ enter }}">
+              <button type="submit" class="btn btn-info btn-lg glyphicon glyphicon-trash" style="width:80%;background-color:red">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    {% endifnotequal %}
+
+
+
+{% elif request.user.is_authenticated %}
+<h2 align="center"> <u>YOUR DETAILS</u></h2>
+<h3 align="center" style="color:green"> <b>YOUR ID:</b> {{ cdetails.0 }} </h3><br>
+<table style="table-layout:fixed;width=100%">
+  <tr>
+    <td>  </td>
+    <td> <b> Name </b>: {{ cdetails.1 }} </td>
+    <td> <b> E-Mail </b>: {{ cdetails.2 }} </td>
+    <td>  </td>
+  </tr>
+  <tr>
+    <td>  </td>
+    <td> <b> Mobile No. </b>: {{ cdetails.3 }} </td>
+    <td> <b> Address </b>: {{ cdetails.4 }} </td>
+    <td>  </td>
+  </tr>
+  <tr>
+    <td>  </td>
+    <td> <b> Points </b>: {{ cdetails.5 }} </td>
+    <td> <b> No. of purchases </b>: {{ cdetails.6 }} </td>
+    <td>  </td>
+  </tr>
+</table><br>
+<center>
+  <button type="button" class="btn btn-info btn-lg glyphicon glyphicon-pencil" data-toggle="modal" data-target="#my" style="width:10%;margin-bottom:4px">Edit Details</button></center>&nbsp&nbsp&nbsp
+    <div id="my" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="modal-title"> Edit Details </h2>
+                  </div> 
+                <div class="modal-body">
+  
+
+  <form action="/editdetails/" method="GET">
+   <label><b>Your ID: </b></label>
+    <input type="text" placeholder="Enter ID of product" name="id" value="{{cdetails.0}}" readonly><br><br>
+
+    <h3 align='center'> Enter New Detail(s)</h3><br>
+  
+  <label style="font-size:20px"><b>Name:&nbsp&nbsp&nbsp</b></label>
+    <input type="text" placeholder="Enter Name" name="nam" value="{{ cdetails.1 }}"><br>
+
+  <label style="font-size:20px"><b>E-Mail:&nbsp&nbsp&nbsp</b></label>
+    <input type="text" placeholder="Enter E-mail" name="emai" value="{{ cdetails.2 }}"><br>
+  
+  <label style="font-size:20px"><b>Phone:&nbsp&nbsp&nbsp</b></label>
+    <input type="text" placeholder="Enter Phone No." name="phon" value="{{ cdetails.3 }}"><br>
+
+    <label style="font-size:20px"><b>Address:&nbsp</b></label>
+    <input type="text" placeholder="Enter Address" name="addres" value="{{ cdetails.4 }}"><br><br>
+        
+    <button type="submit" class="btn btn-info btn-lg">Edit</button>
+</form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+  <center><a href="/prevorder" class="btn btn-info btn-lg glyphicon glyphicon-eye-open" style="width:12%;margin-bottom:4px">Previous Orders</a></center>&nbsp&nbsp&nbsp
+
+{% ifequal t '1' %}
+<table id="tab" style="table-layout:fixed;width=100%">
+        <tr>
+          <th> S.No. </th>
+          <th> Order ID </th>
+          <th>  </th>
+        </tr>
+        {% for i in display %}
+        <tr>
+          <td> {{ forloop.counter }}. </td>
+          <td> 
+              <button class="but" data-toggle="modal" data-target="#my1{{ i.0.0 }}">{{ i.0.0 }}</button>
+              <div id="my1{{ i.0.0 }}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="modal-title"> Order Details </h2>
+                  </div> 
+                <div class="modal-body">
+      
+                <table style="table-layout:fixed;width=100%">
+                  <tr>
+                    <td>  </td>
+                    <td> <b> Date of Ordering </b>: {{ i.0.1 }} </td>
+                    <td> <b> Status </b>: {% ifequal i.0.2 "Pending" %}<span style="color:red">{{ i.0.2 }}
+          {% else %}<span style="color:green">{{ i.0.2 }} </td>{% endifequal %}</td>
+                    <td>  </td>
+                  </tr>
+                </table>
+                <center> <b>Total Amount :</b>{{ i.0.3 }} </center>
+                <table id="ta" style="table-layout:fixed;width=100%">
+                  <tr>
+                    <th> S.No. </th>
+                    <th> Product Name </th>
+                    <th> Brand </th>
+                    <th> Category </th>
+                    <th> Price </th>
+                    <th> Quantity </th>
+                  </tr>
+                  {% for j in i.1 %}
+                  <tr>
+                    <td> {{ forloop.counter }}. </td>
+                    <td> {{ j.0 }} </td>
+                    <td> {{ j.1 }} </td>
+                    <td> {{ j.2 }} </td>
+                    <td> {{ j.3 }} </td>
+                    <td> {{ j.4 }} </td>
+                  </tr>
+                  {% endfor %}
+                </table>
+            </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </td>
+          <td>{% ifequal i.0.2 "Pending" %}
+            <form action="/deleteorder/" method="GET">
+              <input type="hidden" name="oid" value="{{ i.0.0 }}">
+              <input type="hidden" name="enter" value="0">
+              <button type="submit" class="btn btn-info btn-lg glyphicon glyphicon-trash" style="width:80%;background-color:red">Delete</button>
+            </form>{% endifequal %}
+             </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endifequal %}
+ {% endif %}
+
+</body>
+</html>

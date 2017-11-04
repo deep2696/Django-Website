@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <title>Items</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+
+.dropbtn  li span {
+  font-size: :40px;
+}
+
+.dropbtn {
+    background-color: #222;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #4d4d4d;
+}
+  
+  .fa.fa-inr {
+    font-size: 19px;
+    margin-top: 5%;
+    margin-left: 34%;
+  }
+	table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+.forms {
+	margin:5px;
+}
+input[type=text] {
+	align:center;
+	border:2px solid #ccc;
+	border-radius:5px;
+	margin:3px;
+}
+li {
+  border-right: 2px solid black;
+}
+</style>
+</head>
+<body background="{% static 'webapp/images/background.jpg' %}">
+
+<h1 align=center style='color:red'> <b>Geetanjali Super Store</b> </h1>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a href="/order" class="glyphicon glyphicon-shopping-cart" style="color:green">ORDER NOW!</a></li>
+      {% else %}
+      <li><a href="/items"> Items </a> </li>
+      {% endif %}
+      <li><a href="/offers">Offers</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if request.user.is_authenticated %}
+        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span>Dashboard</a></li>
+      <li><a href="/logout"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+      {% else %}
+      <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+{% if messages %}
+    <center>
+{% for message in messages %}
+        <div {% if message.tags == 'error' %} class="alert alert-danger" role="alert" {% else %} class="alert alert-success" {% endif %}> <p style="font-size:30px">{{ message }}</p></div>
+        {% endfor %}
+        </center>
+    {% endif %}
+
+<h2 align='center'> Items </h2>
+<div class='forms'>
+<form action='/items/' method='GET' style="display:inline-block">
+	 Name: <input type='text' name='name'>
+	 Category: <input type='text' name='category'>
+	 Price(less than): <input type='text' name='price'>
+	 <button type='submit'>Search</button> 
+</form>
+
+{% if request.user.is_superuser %}
+<button type="button" class="btn btn-info btn-lg glyphicon glyphicon-plus" style="float:right;margin:2px" data-toggle="modal" data-target="#myMo"> Add Items</button>
+<div id="myMo" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="modal-title" align="center"> Add Items </h2>
+                  </div> 
+                <div class="modal-body">
+                    <form action="/additems/" method="GET">
+
+  <table style="table-layout:fixed">
+    <tr>
+    <td><label><b>Name: </b></label></td>
+    <td><input type="text" placeholder="Enter name of product" name="nam" required></td>
+    </tr>
+    <tr>
+    <td><label><b>Category: </b></label></td>
+    <td><input type="text" placeholder="Enter Category" name="categor" required></td>
+  </tr><tr>
+    <td><label><b>Price: </b></label></td>
+    <td><input type="text" placeholder="Enter Price" name="pric" required></td>
+  </tr><tr>
+    <td><label><b>Brand: </b></label></td>
+    <td><input type="text" placeholder="Enter Brand" name="bran" required></td>
+  </tr><tr>
+    <td><label><b>Quantity: </b></label></td>
+    <td><input type="text" placeholder="Enter Quantity" name="qty" required></td>
+  </tr><tr>
+    <td><label><b>Description: </b> (optional)</label></td>
+    <td><input type="text" placeholder="Enter Description" name="descriptio"></td>
+    </tr> 
+    </table>   
+   <center> <button type="submit" class="btn btn-info btn-lg">Add</button> </center>
+
+</form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+{% endif %}
+{% if request.user.is_authenticated %}
+{% if not request.user.is_superuser %}
+<a href="/checkout" class="btn btn-info btn-lg glyphicon glyphicon-shopping-cart" style="float:right;margin:2px;margin-right:0.8%;width:200px"> <strong>Checkout</strong></a>
+{% endif %}{% endif %}
+</div>
+<table style="table-layout:fixed">
+	<tr>
+    <th> ID </th>
+		<th> Name </th>
+		<th> Brand </th>
+		<th> Price </th>
+    {% if request.user.is_superuser %}<th> Quantity </th> {% endif %}
+		{% if request.user.is_authenticated %}{% if not request.user.is_superuser %}
+    <th></th>
+    {% endif %}{% endif %}
+    <th></th>
+    {% if request.user.is_superuser %}
+    <th></th>
+    <th></th>
+    {% endif %}
+	</tr>
+
+  {% for i in item %}
+		
+    <tr>
+			<td> {{ i.0 }} </td>
+      <td> {{ i.1 }} </td>
+      <td> {{ i.4 }} </td>
+      <td class="fa fa-inr"> {{ i.3 }} </td>
+      {% if request.user.is_superuser %}<td> {{ i.6 }} </td> {% endif %}
+			
+      {% if request.user.is_authenticated %}{% if not request.user.is_superuser %}
+      <td> 
+        <button type="button" class="btn btn-info btn-lg glyphicon glyphicon-plus" data-toggle="modal" data-target="#myModa{{i.0}}" style="width:80%">Add to Cart</button>
+        <div id="myModa{{i.0}}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="modal-title"> Enter Quantity </h2>
+                  </div> 
+                <div class="modal-body">
+                    <form action="/addtocart/" method="GET">
+                        <label><b>Quantity:  </b></label>
+                        <input type="text" placeholder="Enter Quantity" name="quantit" value="1"><br>
+                        <input type="hidden" placeholder="Enter Quantity" name="cartitemid" value="{{ i.0 }}">
+                        <hr style="border-top:2px solid">
+                        <p> <b>Item Name</b> : {{ i.1 }} </p>
+                        <p> <b>Item Category</b> : {{ i.2 }} </p>
+                        <p> <b>Item Price </b>: {{ i.3 }} </p><br>
+                        <button type="submit" class="btn btn-info btn-lg glyphicon glyphicon-plus">Add</button>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div></td>
+      {% endif %}{% endif %}
+      <td> 
+				<button type="button" class="btn btn-info btn-lg glyphicon glyphicon-eye-open" data-toggle="modal" data-target="#myModal{{i.0}}" style="width:80%">View Details</button>
+				<div id="myModal{{i.0}}" class="modal fade" role="dialog">
+  					<div class="modal-dialog">
+  						<div class="modal-content">
+  							<div class="modal-header">
+        						<button type="button" class="close" data-dismiss="modal">&times;</button>
+        						<h2 class="modal-title"> Description </h2>
+      						</div> 
+  							<div class="modal-body">
+        						<p> <strong>Category:</strong> {{ i.2 }} </p><br>
+                    <p> <strong>Description:</strong> {{ i.5 }} </p>
+      						</div>
+      						<div class="modal-footer">
+        						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      						</div>
+      					</div>
+      				</div>
+      			</div></td>
+          
+        {% if request.user.is_superuser %}
+          <td><button type="button" class="btn btn-info btn-lg glyphicon glyphicon-pencil" data-toggle="modal" data-target="#myModall{{i.0}}" style="width:80%">Edit</button></td>
+          <td><form action="/delitems/" method="GET">
+          <input type="hidden" name="delid" value="{{ i.0 }}">
+          <button type="submit" class="btn btn-info btn-lg glyphicon glyphicon-trash" style="width:80%;background-color:red">Delete</button>
+          </form>   	
+  			 </td>
+         {% endif %}
+
+		</tr>
+	{% endfor %}
+</table>
+
+<!-- for the modal form of editing items -->  
+{% for i in item %}
+<div id="myModall{{i.0}}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="modal-title"> Edit Items </h2>
+                  </div> 
+                <div class="modal-body">
+  
+
+  <form action="/edititems/" method="GET">
+   <label><b>Product ID: </b></label>
+    <input type="text" placeholder="Enter ID of product" name="id" value="{{i.0}}" required><br><br>
+
+    <h3 align='center'> Enter New Detail(s)(which you wish to change) </h3><br>
+  
+  <label><b> Name:  </b></label>
+    <input type="text" placeholder="Enter Name" name="nam"><br>
+
+  <label><b> Category:  </b></label>
+    <input type="text" placeholder="Enter Category" name="categor"><br>
+  
+  <label><b> Price:  </b></label>
+    <input type="text" placeholder="Enter Price" name="pric"><br>
+
+    <label><b> Brand:  </b></label>
+    <input type="text" placeholder="Enter Brand" name="bran"><br>
+
+    <label><b> Quantity:  </b></label>
+    <input type="text" placeholder="Enter Quantity" name="qty"><br>
+  
+  <label><b> Description:  </b> </label>
+    <input type="text" placeholder="Enter Description" name="descriptio"><br>
+        
+    <button type="submit" class="btn btn-info btn-lg">Edit</button>
+</form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+{% endfor %}
+
+</body>
+</html>

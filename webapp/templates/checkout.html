@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <title>Checkout</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td {
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
+#tab table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#tab th, td {
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
+#tab tr:nth-child(even){background-color: #f2f2f2}
+
+#tab th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+li {
+  border-right: 2px solid black;
+}
+</style>
+</head>
+<body background="{% static 'webapp/images/background.jpg' %}">
+
+<h1 align=center style='color:red'> <b>Geetanjali Super Store</b> </h1>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/">Home</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a href="/order" class="glyphicon glyphicon-shopping-cart" style="color:green">ORDER NOW!</a></li>
+      {% else %}
+      <li><a href="/items"> Items </a> </li>
+      {% endif %}
+      <li><a href="/offers">Offers</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if request.user.is_authenticated %}
+        <li><a href="/profile"><span class="glyphicon glyphicon-user"></span>Dashboard</a></li>
+      <li><a href="/logout"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+      {% else %}
+      <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+{% if messages %}
+    <center>
+{% for message in messages %}
+        <div {% if message.tags == 'error' %} class="alert alert-danger" role="alert" {% else %} class="alert alert-success" {% endif %}> <p style="font-size:30px">{{ message }}</p></div>
+        {% endfor %}
+        </center>
+    {% endif %}
+<br>
+<h2 align="center"> <u>CUSTOMER DETAILS</u></h2><br>
+<table style="table-layout:fixed;width=100%">
+  <tr>
+    <td>  </td>
+    <td> <b> Name </b>: {{ customerdetails.1 }} </td>
+    <td> <b> E-Mail </b>: {{ customerdetails.2 }} </td>
+    <td>  </td>
+  </tr>
+  <tr>
+    <td>  </td>
+    <td> <b> Mobile No. </b>: {{ customerdetails.3 }} </td>
+    <td> <b> Address </b>: {{ customerdetails.4 }} </td>
+    <td>  </td>
+  </tr>
+</table>
+<br><center> <p style="font-size:20px;"><b>Your Points</b> : {{ customerdetails.5 }} </p></center><br>
+<h2 align="center"> <u>Your Cart(Order ID : {{ oid }} )</u></h2><br>
+<table id="tab" style="table-layout:fixed;width=100%">
+  <tr>
+    <th> S.No. </th>
+    <th> Item Name </th>
+    <th> Quantity </th>
+    <th> Price </th>
+    <th> </th>
+  </tr>
+  {% for i in item %}
+
+    <tr>
+      <td> {{ forloop.counter }}. </td>
+      <td> {{ i.1 }} </td>
+      <td> {{ i.7 }} </td>
+      <td> {{ i.3 }} </td>
+      <td>
+        <form action="/remove/" method="GET">
+          <input type="hidden" name="oid" value="{{ oid }}">
+          <input type="hidden" name="iid" value="{{ i.0 }}">
+          <button type="submit" class="btn btn-info btn-lg glyphicon glyphicon-trash" style="width:80%;background-color:red">Remove</button>
+        </form>     
+      </td>
+    </tr>
+
+  {% endfor %}
+  <tr>
+    <td>  </td>
+    <td>  </td>
+    <td> <strong>Sub Total : </td>
+    <td style="border-top:2px solid black"> <strong>{{ subtotal }} <strong></td>
+    <td>  </td>
+  </tr>
+  <tr>
+    <td>  </td>
+    <td>  </td>
+    <td> <strong>Discount : </td>
+    <td> <strong>{{ discount }}%{% ifequal entry 2 %} + <i class="fa fa-inr"></i>{{ adddiscount }}<strong>{% endifequal %}</td>
+    <td> {% ifequal entry 1 %}<form action="/checkout/" method="GET"><input type="hidden" name="enter" value="1"><button type="submit" class="btn btn-info btn-lg" style="float:center;margin:2px" title="Once pressed you cannot undo the action.">Use Points</button></form>{% endifequal %} </td>
+  </tr>
+  <tr>
+    <td>  </td>
+    <td>  </td>
+    <td> <strong>Total Price : </td>
+    <td style="border-top:2px solid black;border-bottom:2px solid black"> <strong>{{ total }} <strong></td>
+    <td>  </td>
+  </tr>
+</table>
+<br><div align="center"><a href="/items" class="btn btn-info btn-lg glyphicon glyphicon-plus" style="float:center;margin:2px"> Add More Items</a></div><br>
+<div align="center"><a href="/place" class="btn btn-info btn-lg" style="float:center;margin:2px;background-color:green"><i class="fa fa-motorcycle"></i> Place Order</a></div>
+</body>
+</html>

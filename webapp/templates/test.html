@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script src= "https://www.payumoney.com/Api/REST/op/buttonScript" async="true" > </script>
+<script>
+
+
+    
+  function getRandId() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (var i = 0; i < 6; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return text;
+  };
+    function callme(){
+          window.PUM.setData(document.getElementById('payme').innerHTML, getRandId(),"shirt200");
+          window.PUM.pay();
+    };
+
+</script>
+
+</head>
+<body>
+<h1> PAYMENT GATEWAY </h1>
+
+<div id="payme">789 </div>
+<span class='pm-button' id='867620204E33FD751BDF8348EEF5C3A3' onClick="callme()">
+  <span class="state active">
+    <input type="image" src="https://file.payumoney.com/images/payby_payumoney/new_buttons/21.png" width="131" height="37">
+  </span>
+  <span class="state clicked" style="display:none" >
+    <input type="image" src="https://file.payumoney.com/images/payby_payumoney/new_buttons/submitted/21.png" width="131" height="37">
+  </span>
+</span>
+</body>
+</html>
